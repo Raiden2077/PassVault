@@ -10,21 +10,21 @@ namespace PasswordVault.Services
 {
     public class JsonVaultService : IVaultService
     {
-        private const string EncryptedFilePath = "passwords.enc";
-        private const string TempEncryptedFilePath = "passwords.enc.tmp";
         public string Password { private get; set; } = string.Empty;
+        public string FilePath { get; set; } = "passwords.enc";
         public List<PasswordEntry> Load()
         {
-            if (!File.Exists(EncryptedFilePath)) return [];
+            if (!File.Exists(FilePath)) return [];
 
             List<PasswordEntry> entries = [];
-            FileEncryptor.DecryptFile(EncryptedFilePath, entries, Password);
+            FileEncryptor.DecryptFile(FilePath, entries, Password);
             return entries;
         }
         public void Save(IEnumerable<PasswordEntry> entries)
         {
-            FileEncryptor.EncryptFile(entries, TempEncryptedFilePath, Password);
-            File.Move(TempEncryptedFilePath, EncryptedFilePath, overwrite: true);
+            string tempPath = $"{FilePath}.tmp";
+            FileEncryptor.EncryptFile(entries, tempPath, Password);
+            File.Move(tempPath, FilePath, overwrite: true);
         }
 
     }

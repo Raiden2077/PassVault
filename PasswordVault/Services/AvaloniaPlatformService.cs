@@ -5,7 +5,6 @@ using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 using PasswordVault.Models;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PasswordVault.Services
@@ -13,33 +12,35 @@ namespace PasswordVault.Services
     public class AvaloniaPlatformService : IPlatformService
     {
         public TopLevel? TopLevel { get; set; } //экземпляр класса для возможности взаимодействия с системными диалоговыми окнами (сохранить как)
-        public async Task CopyPasswordAsync(string password) 
+        public async Task CopyPasswordAsync(string text) 
         {
             if (TopLevel?.Clipboard is null) return;
 
-            await TopLevel.Clipboard.SetTextAsync(password);
+            await TopLevel.Clipboard.SetTextAsync(text);
             await Task.Delay(15000);
 
             var currentText = await TopLevel.Clipboard.TryGetTextAsync();
-            if (currentText == password)
+            if (currentText == text)
             {
                 await TopLevel.Clipboard.SetTextAsync("");
             }
         }
-        public async Task ExportAsync(IEnumerable<PasswordEntry> entries)
+        public async Task<string?> ImportAsync()
         {
-            if (TopLevel is null) return;
+            if (TopLevel is null) return null;
 
-            var file = await TopLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+            var files = await TopLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = "Экспорт истории",
-                DefaultExtension = "json",
-                SuggestedFileName = "history_export.json"
+                Title = "Выберите файл хранилища",
+                AllowMultiple = false,
+                FileTypeFilter =
+                [
+                    new FilePickerFileType("Зашифрованное хранилище") { Patterns = ["*.enc"] }
+                ]
             });
 
-            if (file is null) return;
-            await using var stream = await file.OpenWriteAsync();
-            await JsonSerializer.SerializeAsync(stream, entries, new JsonSerializerOptions { WriteIndented = true });
+            if (files.Count == 0) return null;
+            return files[0].TryGetLocalPath();
         }
         public void ToggleTheme()
         {
