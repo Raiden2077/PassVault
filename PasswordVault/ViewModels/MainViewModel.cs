@@ -172,6 +172,12 @@ public partial class MainViewModel : ViewModelBase
         _vaultService.FilePath = path;
         ErrorMessage = string.Empty;
     }
+
+    [RelayCommand] 
+    private void ToggleTheme() => _platformService.ToggleTheme();
+
+    [RelayCommand]
+    public async Task OpenAboutAsync() => await _platformService.ShowAboutWindowAsync();
     private void ApplyFilter()
     {
         Entries.Clear();

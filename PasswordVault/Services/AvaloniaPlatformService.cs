@@ -1,10 +1,9 @@
-﻿using Avalonia;
+﻿using PasswordVault.Views;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Platform.Storage;
 using Avalonia.Styling;
-using PasswordVault.Models;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PasswordVault.Services
@@ -50,6 +49,13 @@ namespace PasswordVault.Services
                 Application.Current.ActualThemeVariant == ThemeVariant.Dark
                 ? ThemeVariant.Light
                 : ThemeVariant.Dark;
+        }
+        public async Task ShowAboutWindowAsync()
+        {
+            if (TopLevel is not Window owner) return;
+
+            var aboutWindow = new AboutWindow();
+            await aboutWindow.ShowDialog(owner);
         }
     }
 }

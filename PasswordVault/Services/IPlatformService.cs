@@ -9,5 +9,6 @@ namespace PasswordVault.Services
         public Task CopyPasswordAsync(string text);
         public Task<string?> ImportAsync();
         public void ToggleTheme();
+        public Task ShowAboutWindowAsync();
     }
 }

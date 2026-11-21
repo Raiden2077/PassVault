@@ -4,20 +4,28 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="800"
-        Width="650" Height="500"
+        Width="650" Height="600"
         CanMaximize="False"
-        MinWidth="550" MinHeight="400"
+        MinWidth="550" MinHeight="500"
         x:Class="PasswordVault.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         xmlns:m="using:PasswordVault.Models"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/PassVault-logo.ico"
         Title="PassVault">
 
     <Design.DataContext>
         <vm:MainViewModel />
     </Design.DataContext>
-
-        <TabControl Margin="5">
+    <Grid Margin="20"
+        RowDefinitions="Auto, *" RowSpacing="15">
+        <Menu Grid.Row="0">
+            <MenuItem Header="_Справка">
+                <MenuItem Header="Переключить тему" Command="{Binding ToggleThemeCommand}"/>
+                <Separator/>
+                <MenuItem Header="О программе..." Command="{Binding OpenAboutCommand}"/> 
+            </MenuItem>
+        </Menu>
+        <TabControl Margin="5" Grid.Row="1">
             <TabItem Header="Генератор паролей" FontSize="14">
                 <Grid Margin="20"
                       RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto" RowSpacing="15"
@@ -93,7 +101,8 @@
                              AcceptsReturn="False"
                              AcceptsTab="False"
                              VerticalAlignment="Center"
-                             Grid.Row="1">
+                             Grid.Row="1"
+                             Grid.ColumnSpan="2">
                             <TextBox.KeyBindings>
                                 <KeyBinding Gesture="Enter" Command="{Binding UnlockVaultCommand}"/>
                             </TextBox.KeyBindings>
@@ -101,12 +110,15 @@
                         <Button
                             Content="Войти"
                             Command="{Binding UnlockVaultCommand}"
-                            VerticalAlignment="Center"
-                            Grid.Row="2"/>
-                        <TextBlock
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="2"/>
+                        <TextBlock 
                             Text="{Binding ErrorMessage}"
                             Foreground="Red"
-                            Grid.Row="3"/>
+                            Grid.Row="3"
+                            Grid.ColumnSpan="2"/>
                     </Grid>
                     <Grid IsVisible="{Binding !IsPasswordRequired}"
                         Margin="20"
@@ -194,6 +206,6 @@
                 </Grid>
             </TabItem>
         </TabControl>
-
+    </Grid>
 </Window>
 
